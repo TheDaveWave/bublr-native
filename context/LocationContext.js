@@ -9,22 +9,13 @@ export function LocationProvider({ children }) {
   const [userLocation, setUserLocation] = useState({});
 
   async function getPermissions() {
-    const foreground = await Location.getForegroundPermissionsAsync()
-      .then((response) => {
-        setForegroundPermission(response);
-      })
-      .catch((err) => {
-        console.log("Error getting foreground permissions:", err);
-      });
-    const background = await Location.getBackgroundPermissionsAsync()
-      .then((response) => {
-        setBackgroundPermission(response);
-      })
-      .catch((err) => {
-        console.log("Error getting background permissions:", err);
-      });
-
-    // console.log("Permissions:", foregroundStatus, backgroundStatus);
+    const foreground = await Location.getForegroundPermissionsAsync();
+    setForegroundPermission(foreground);
+    if (foreground.granted) {
+      const background = await Location.getBackgroundPermissionsAsync();
+      setBackgroundPermission(background);
+    }
+    console.log("Foreground:", foreground);
   }
 
   async function getUserLocation() {
@@ -36,8 +27,8 @@ export function LocationProvider({ children }) {
   useEffect(() => {
     (async () => {
       await getPermissions();
-      const response = await Location.hasServicesEnabledAsync()
-      if(response) {
+      const response = await Location.hasServicesEnabledAsync();
+      if (response) {
         await getUserLocation();
         console.log("Permissions:", foregroundStatus, backgroundStatus);
       } else {
