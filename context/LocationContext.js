@@ -9,13 +9,14 @@ export function LocationProvider({ children }) {
   const [userLocation, setUserLocation] = useState({});
 
   async function getPermissions() {
-    const foreground = await Location.getForegroundPermissionsAsync();
-    setForegroundPermission(foreground);
-    if (foreground.granted) {
-      const background = await Location.getBackgroundPermissionsAsync();
-      setBackgroundPermission(background);
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    setForegroundPermission(status);
+    if (status) {
+      const { status } = await Location.requestBackgroundPermissionsAsync();
+      if (status) {
+        setBackgroundPermission(status);
+      }
     }
-    console.log("Foreground:", foreground);
   }
 
   async function getUserLocation() {
@@ -26,13 +27,12 @@ export function LocationProvider({ children }) {
 
   useEffect(() => {
     (async () => {
-      await getPermissions();
       const response = await Location.hasServicesEnabledAsync();
       if (response) {
         await getUserLocation();
         console.log("Permissions:", foregroundStatus, backgroundStatus);
       } else {
-        console.log("No location access");
+        await getPermissions();
       }
     })();
   }, []);

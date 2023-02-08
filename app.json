@@ -20,8 +20,9 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location while using the app",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location",
+        "NSLocationUsageDescription": "Allow bublr_native to access your location",
+        "NSLocationWhenInUseUsageDescription": "Allow bublr_native to access your location while using the app",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow bublr_native to access your location",
         "UIBackgroundModes": [
           "location",
           "fetch"
