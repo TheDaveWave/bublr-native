@@ -34,6 +34,8 @@ export default function BottomTabs() {
           shadowOpacity: 0.5,
           shadowColor: "#E3E7DE",
         },
+        // forces component unmount checkout out freeze, or another way to re-render certain components.
+        unmountOnBlur: true,
         // tabBarActiveTintColor: "#76E5FC",
         // tabBarActiveBackgroundColor: "#DEE2D9",
       }}

@@ -30,7 +30,7 @@ export function LocationProvider({ children }) {
       const response = await Location.hasServicesEnabledAsync();
       if (response) {
         await getUserLocation();
-        console.log("Permissions:", foregroundStatus, backgroundStatus);
+        // console.log("Permissions:", foregroundStatus, backgroundStatus);
       } else {
         await getPermissions();
       }
@@ -38,7 +38,7 @@ export function LocationProvider({ children }) {
   }, []);
 
   return (
-    <LocationContext.Provider value={{ userLocation }}>
+    <LocationContext.Provider value={{ userLocation, getUserLocation }}>
       {children}
     </LocationContext.Provider>
   );
