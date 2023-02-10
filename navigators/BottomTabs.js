@@ -6,7 +6,7 @@ import HomeScreen from "../screens/Home";
 import Map from "../screens/Map";
 import FountainList from "../screens/FountainList";
 import Profile from "../screens/Profile";
-import Settings from "../screens/Settings";
+import Settings from "../screens/Settings/Settings";
 
 const Tab = createBottomTabNavigator();
 

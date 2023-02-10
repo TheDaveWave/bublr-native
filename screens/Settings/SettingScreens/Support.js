@@ -1,10 +1,10 @@
-import { Text, StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Settings({ navigation }) {
+export default function Support({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
-      <Text>This will be the Settings.</Text>
+      <Text>Support</Text>
     </SafeAreaView>
   );
 }
@@ -12,7 +12,7 @@ export default function Settings({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#D5D5D5",
     alignItems: "center",
     justifyContent: "center",
   },
