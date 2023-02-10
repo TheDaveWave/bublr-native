@@ -7,6 +7,8 @@ import Map from "../screens/Map";
 import FountainList from "../screens/FountainList";
 import Profile from "../screens/Profile";
 import Settings from "../screens/Settings/Settings";
+import SettingsNav from "../screens/Settings/SettingsNav";
+import { StyleSheet } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
@@ -18,24 +20,7 @@ export default function BottomTabs({ routeName }) {
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          position: "absolute",
-          height: 90,
-          elevation: 0,
-          bottom: 25,
-          left: 20,
-          right: 20,
-          backgroundColor: "#F5FBEF",
-          borderRadius: 15,
-          paddingBottom: 25,
-          paddingTop: 10,
-          shadowOffset: {
-            height: 12,
-            width: 0,
-          },
-          shadowOpacity: 0.5,
-          shadowColor: "#E3E7DE",
-        },
+        tabBarStyle: style.tabBar,
         // forces component unmount checkout out freeze, or another way to re-render certain components.
         unmountOnBlur: true,
         // tabBarActiveTintColor: "#76E5FC",
@@ -83,16 +68,40 @@ export default function BottomTabs({ routeName }) {
         }}
       />
       <Tab.Screen
-        name="Settings"
-        component={Settings}
+        name="SettingsNav"
+        component={SettingsNav}
         options={{
           tabBarLabel: "Settings",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="settings" color={color} size={size} />
           ),
-          tabBarStyle: { display: visible ? "none" : "flex" },
+          tabBarStyle: visible ? style.hidden : style.tabBar,
         }}
       />
     </Tab.Navigator>
   );
 }
+
+const style = StyleSheet.create({
+  tabBar: {
+    position: "absolute",
+    height: 90,
+    elevation: 0,
+    bottom: 25,
+    left: 20,
+    right: 20,
+    backgroundColor: "#F5FBEF",
+    borderRadius: 15,
+    paddingBottom: 25,
+    paddingTop: 10,
+    shadowOffset: {
+      height: 12,
+      width: 0,
+    },
+    shadowOpacity: 0.5,
+    shadowColor: "#E3E7DE",
+  },
+  hidden: {
+    display: "none",
+  },
+});

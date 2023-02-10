@@ -20,7 +20,7 @@ export default function AppNav() {
       onStateChange={async () => {
         // const previousRoute = routeName;
         const currentRouteName = ref.getCurrentRoute().name;
-        console.log(currentRouteName);
+        // console.log(currentRouteName);
         setRouteName(currentRouteName);
       }}
     >

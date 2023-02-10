@@ -12,9 +12,9 @@ const Stack = createNativeStackNavigator();
 
 export default function SettingsNav() {
   return (
-    <Stack.Navigator initialRouteName="Root">
+    <Stack.Navigator initialRouteName="Settings">
       <Stack.Screen
-        name="Root"
+        name="Settings"
         component={Root}
         options={{
           headerTitle: "Settings",
