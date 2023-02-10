@@ -10,7 +10,9 @@ import Settings from "../screens/Settings/Settings";
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomTabs() {
+export default function BottomTabs({ routeName }) {
+  const visible = routeName === "AddFountain";
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -88,6 +90,7 @@ export default function BottomTabs() {
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="settings" color={color} size={size} />
           ),
+          tabBarStyle: { display: visible ? "none" : "flex" },
         }}
       />
     </Tab.Navigator>

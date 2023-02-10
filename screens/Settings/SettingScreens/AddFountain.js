@@ -1,11 +1,27 @@
-import { StyleSheet, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Camera, CameraType } from "expo-camera";
 
 export default function AddFountain({ navigation }) {
+  const [type, setType] = useState(CameraType.back);
+  const [permisson, requestPermisson] = Camera.useCameraPermissions();
+
+  if(!permisson) {
+    try {
+      requestPermisson();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Text>Add a new Fountain</Text>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Camera style={styles.camera} type={type}>
+        <View>
+
+        </View>
+      </Camera>
+    </View>
   );
 }
 
@@ -15,5 +31,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#D5D5D5",
     alignItems: "center",
     justifyContent: "center",
+  },
+  camera: {
+    flex: 1,
+    width: "100%",
   },
 });

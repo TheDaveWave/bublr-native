@@ -12,9 +12,7 @@ const Stack = createNativeStackNavigator();
 
 export default function SettingsNav() {
   return (
-    <Stack.Navigator
-        initialRouteName="Root"
-    >
+    <Stack.Navigator initialRouteName="Root">
       <Stack.Screen
         name="Root"
         component={Root}
@@ -26,7 +24,13 @@ export default function SettingsNav() {
       <Stack.Screen name="Account" component={Account} />
       <Stack.Screen name="Security" component={Security} />
       <Stack.Screen name="Support" component={Support} />
-      <Stack.Screen name="AddFountain" component={AddFountain} />
+      <Stack.Screen
+        name="AddFountain"
+        component={AddFountain}
+        options={{
+          unmountOnBlur: true,
+        }}
+      />
     </Stack.Navigator>
   );
 }
