@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Camera, CameraType } from "expo-camera";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
+import CircleButton from "../../components/buttons/CameraButtons/CircleButton";
 
 export default function AddFountain({ navigation }) {
-  const [type, setType] = useState(CameraType.back);
   const [cameraRef, setCameraRef] = useState(null);
   const [ready, setReady] = useState(false);
   const [camPermission, requestCamPermission] = Camera.useCameraPermissions();
   const [permission, requestPermission] = MediaLibrary.usePermissions();
+  const [locationPermission, requestLocationPermission] =
+    Location.useForegroundPermissions();
+  const [paused, setPaused] = useState(false);
 
+  // update these if statements.
   if (!permission) {
     try {
       requestPermission();
@@ -27,16 +31,39 @@ export default function AddFountain({ navigation }) {
     }
   }
 
+  if (!locationPermission) {
+    try {
+      requestLocationPermission();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async function pressFunction() {
     if (ready) {
+      setPaused(true);
       await cameraRef
         .takePictureAsync()
         .then((response) => {
-          console.log("picture taken", response);
-          MediaLibrary.saveToLibraryAsync(response.uri);
+          console.log("picture taken:", response);
+          // save the uri of the image to the devices photo library.
+          // MediaLibrary.saveToLibraryAsync(response.uri);
+
+          // pause preview while paused is true.
+          cameraRef.pausePreview();
+          Location.getCurrentPositionAsync()
+            .then((response) => {
+              console.log("Picture location:", response);
+              setPaused(false);
+              // continue preview when after location and picture are taken.
+              cameraRef.resumePreview();
+            })
+            .catch((err) => {
+              console.log("Error getting location:", err);
+            });
         })
         .catch((err) => {
-          console.log(err);
+          console.log("Error taking picture:", err);
         });
     } else {
       alert("Lol you can't take the picture!");
@@ -49,17 +76,11 @@ export default function AddFountain({ navigation }) {
         ref={(ref) => setCameraRef(ref)}
         onCameraReady={() => setReady(true)}
         style={styles.camera}
-        type={type}
-      >
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => pressFunction()}
-          >
-            <MaterialIcons name="add-circle" color="#FF0000" size={100} />
-          </TouchableOpacity>
-        </View>
-      </Camera>
+        type={CameraType.back}
+      ></Camera>
+      <View style={styles.buttonContainer}>
+        <CircleButton onPress={() => pressFunction()} disabled={paused} />
+      </View>
     </View>
   );
 }
@@ -72,21 +93,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   camera: {
-    flex: 1,
+    flex: 2 / 3,
     width: "100%",
   },
   buttonContainer: {
-    // flex: 1,
+    flex: 1 / 3,
     alignSelf: "center",
-    marginTop: 600,
+    paddingTop: 30,
     backgroundColor: "#fff",
-    borderRadius: 50,
-    // height: 20,
-    // bottom: 15,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   button: {
-    // height: 20,
-    // backgroundColor: "#FF0000",
-    // color: "#FF0000"
+    // alignSelf: "center",
   },
 });

@@ -7,6 +7,7 @@ import { LocationProvider } from "./context/LocationContext";
 import AppNav from "./navigators/AppNav";
 
 export default function App() {
+  
   return (
     <LocationProvider>
       <AppNav />
