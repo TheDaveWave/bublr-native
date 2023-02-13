@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Settings Screen imports:
-import Settings from "../screens/SettingScreens/Settings";
-import About from "../screens/SettingScreens/About";
-import Account from "../screens/SettingScreens/Account";
-import AddFountain from "../screens/SettingScreens/AddFountain";
-import Security from "../screens/SettingScreens/Security";
-import Support from "../screens/SettingScreens/Support";
+import Settings from "../screens/settings-screens/Settings";
+import About from "../screens/settings-screens/About";
+import Account from "../screens/settings-screens/Account";
+import AddFountain from "../screens/settings-screens/AddFountain";
+import Security from "../screens/settings-screens/Security";
+import Support from "../screens/settings-screens/Support";
 
 const Stack = createNativeStackNavigator();
 

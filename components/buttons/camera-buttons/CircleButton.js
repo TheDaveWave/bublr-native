@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 export default function CircleButton({ onPress, disabled }) {
   return (
-    <View>
+    <View style={styles.container}>
       <TouchableOpacity onPress={onPress} disabled={disabled}>
         <View style={styles.iconContainer}>
           <MaterialIcons name="circle" color="#FF0000" size={70} />
@@ -14,10 +14,21 @@ export default function CircleButton({ onPress, disabled }) {
 }
 
 const styles = StyleSheet.create({
-  iconContainer: {
+  container: {
+    width: 84,
+    height: 84,
+    marginHorizontal: 60,
+    borderWidth: 4,
     borderColor: "#FF0000",
+    borderRadius: 42,
+    padding: 3,
+  },
+  iconContainer: {
+    /*  borderColor: "#FF0000",
     borderStyle: "solid",
     borderWidth: 5,
-    borderRadius: 50,
+    borderRadius: 50, */
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

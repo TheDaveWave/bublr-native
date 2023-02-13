@@ -6,7 +6,6 @@ import { StatusBar } from "expo-status-bar";
 import { useContext, useState } from "react";
 
 // Navigation component imports:
-import StackNav from "./StackNav";
 import BottomTabs from "./BottomTabs";
 
 import { LocationContext } from "../context/LocationContext";
@@ -16,7 +15,7 @@ const ref = createNavigationContainerRef();
 
 export default function AppNav() {
   const [routeName, setRouteName] = useState();
-  // possible change this.
+  // possibly change this.
   const { loading } = useContext(LocationContext);
 
   // Have loading animation at least for saving headache during development.

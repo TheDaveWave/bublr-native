@@ -1,5 +1,3 @@
-import { StyleSheet, Text, View } from "react-native";
-
 // Providers:
 import { LocationProvider } from "./context/LocationContext";
 

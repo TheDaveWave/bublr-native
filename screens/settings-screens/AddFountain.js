@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { StyleSheet, View, Image, ImageBackground } from "react-native";
+import { StyleSheet, View, ImageBackground } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
-import CircleButton from "../../components/buttons/CameraButtons/CircleButton";
+import CircleButton from "../../components/buttons/camera-buttons/CircleButton";
+import CameraButton from "../../components/buttons/camera-buttons/CameraButton";
 
 export default function AddFountain({ navigation }) {
   const [cameraRef, setCameraRef] = useState(null);
@@ -32,6 +33,7 @@ export default function AddFountain({ navigation }) {
     }
   }
 
+  // NEED TO update to only allow users with location services enabled upload a fountain.
   if (!locationPermission) {
     try {
       requestLocationPermission();
@@ -54,16 +56,6 @@ export default function AddFountain({ navigation }) {
           and the image is rendered and not the camera. The cameraref is set when camera renders. */
           // pause preview while paused is true.
           // cameraRef.pausePreview();
-          Location.getCurrentPositionAsync()
-            .then((response) => {
-              console.log("Picture location:", response);
-              // setPaused(false);
-              // continue preview when after location and picture are taken.
-              // cameraRef.resumePreview();
-            })
-            .catch((err) => {
-              console.log("Error getting location:", err);
-            });
         })
         .catch((err) => {
           console.log("Error taking picture:", err);
@@ -71,6 +63,28 @@ export default function AddFountain({ navigation }) {
     } else {
       alert("Lol you can't take the picture!");
     }
+  }
+
+  // resets the preview and allows user to retake picture.
+  function reset() {
+    setPicture(null);
+    setPaused(false);
+  }
+
+  async function submit() {
+    await Location.getCurrentPositionAsync()
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log("Error getting location", err);
+      });
+    await MediaLibrary.saveToLibraryAsync(picture);
+    alert("Picture saved.");
+    setPicture(null);
+    setPaused(false);
+    // add a post request here.
+    // navigation.goBack();
   }
 
   return (
@@ -83,12 +97,16 @@ export default function AddFountain({ navigation }) {
           type={CameraType.back}
         ></Camera>
       ) : (
-        // <View style={styles.camera}>
-          <ImageBackground style={styles.camera} source={{uri: picture}} />
-        /* </View> */
+        <ImageBackground style={styles.camera} source={{ uri: picture }} />
       )}
       <View style={styles.buttonContainer}>
+        <CameraButton icon="done" onPress={() => submit()} disabled={!paused} />
         <CircleButton onPress={() => pressFunction()} disabled={paused} />
+        <CameraButton
+          icon="refresh"
+          onPress={() => reset()}
+          disabled={!paused}
+        />
       </View>
     </View>
   );
@@ -111,7 +129,7 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     backgroundColor: "#fff",
     width: "100%",
-    flexDirection: "row",
     justifyContent: "center",
+    flexDirection: "row",
   },
 });
