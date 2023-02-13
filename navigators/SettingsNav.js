@@ -1,12 +1,12 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Settings Screen imports:
-import Root from "./SettingScreens/Root";
-import About from "./SettingScreens/About";
-import Account from "./SettingScreens/Account";
-import AddFountain from "./SettingScreens/AddFountain";
-import Security from "./SettingScreens/Security";
-import Support from "./SettingScreens/Support";
+import Settings from "../screens/SettingScreens/Settings";
+import About from "../screens/SettingScreens/About";
+import Account from "../screens/SettingScreens/Account";
+import AddFountain from "../screens/SettingScreens/AddFountain";
+import Security from "../screens/SettingScreens/Security";
+import Support from "../screens/SettingScreens/Support";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,7 +15,7 @@ export default function SettingsNav() {
     <Stack.Navigator initialRouteName="Settings">
       <Stack.Screen
         name="Settings"
-        component={Root}
+        component={Settings}
         options={{
           headerTitle: "Settings",
         }}
@@ -28,6 +28,7 @@ export default function SettingsNav() {
         name="AddFountain"
         component={AddFountain}
         options={{
+          headerTitle: "Add Fountain",
           unmountOnBlur: true,
         }}
       />

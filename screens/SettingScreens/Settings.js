@@ -1,8 +1,8 @@
 import { StyleSheet, View } from "react-native";
 
-import SettingNavButton from "../../../components/SettingNavButton";
+import SettingNavButton from "../../components/SettingNavButton";
 
-export default function Root({ navigation }) {
+export default function Settings({ navigation }) {
   return (
     <View style={styles.container}>
       <SettingNavButton

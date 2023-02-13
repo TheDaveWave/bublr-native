@@ -6,8 +6,7 @@ import HomeScreen from "../screens/Home";
 import Map from "../screens/Map";
 import FountainList from "../screens/FountainList";
 import Profile from "../screens/Profile";
-import Settings from "../screens/Settings/Settings";
-import SettingsNav from "../screens/Settings/SettingsNav";
+import SettingsNav from "./SettingsNav";
 import { StyleSheet } from "react-native";
 
 const Tab = createBottomTabNavigator();
@@ -20,7 +19,7 @@ export default function BottomTabs({ routeName }) {
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
-        tabBarStyle: style.tabBar,
+        tabBarStyle: styles.tabBar,
         // forces component unmount checkout out freeze, or another way to re-render certain components.
         unmountOnBlur: true,
         // tabBarActiveTintColor: "#76E5FC",
@@ -75,14 +74,14 @@ export default function BottomTabs({ routeName }) {
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="settings" color={color} size={size} />
           ),
-          tabBarStyle: visible ? style.hidden : style.tabBar,
+          tabBarStyle: visible ? styles.hidden : styles.tabBar,
         }}
       />
     </Tab.Navigator>
   );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   tabBar: {
     position: "absolute",
     height: 90,
