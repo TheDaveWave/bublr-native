@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Image, ImageBackground } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
@@ -13,13 +13,14 @@ export default function AddFountain({ navigation }) {
   const [locationPermission, requestLocationPermission] =
     Location.useForegroundPermissions();
   const [paused, setPaused] = useState(false);
+  const [picture, setPicture] = useState(null);
 
   // update these if statements.
   if (!permission) {
     try {
       requestPermission();
     } catch (err) {
-      console.log(err);
+      console.log("Media permissions error:", err);
     }
   }
 
@@ -27,7 +28,7 @@ export default function AddFountain({ navigation }) {
     try {
       requestCamPermission();
     } catch (err) {
-      console.log(err);
+      console.log("Camera permission error:", err);
     }
   }
 
@@ -35,7 +36,7 @@ export default function AddFountain({ navigation }) {
     try {
       requestLocationPermission();
     } catch (err) {
-      console.log(err);
+      console.log("Location permisson error:", err);
     }
   }
 
@@ -48,15 +49,17 @@ export default function AddFountain({ navigation }) {
           console.log("picture taken:", response);
           // save the uri of the image to the devices photo library.
           // MediaLibrary.saveToLibraryAsync(response.uri);
-
+          setPicture(response.uri);
+          /* does not work after picture state is set since cameraref becomes null
+          and the image is rendered and not the camera. The cameraref is set when camera renders. */
           // pause preview while paused is true.
-          cameraRef.pausePreview();
+          // cameraRef.pausePreview();
           Location.getCurrentPositionAsync()
             .then((response) => {
               console.log("Picture location:", response);
-              setPaused(false);
+              // setPaused(false);
               // continue preview when after location and picture are taken.
-              cameraRef.resumePreview();
+              // cameraRef.resumePreview();
             })
             .catch((err) => {
               console.log("Error getting location:", err);
@@ -72,12 +75,18 @@ export default function AddFountain({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Camera
-        ref={(ref) => setCameraRef(ref)}
-        onCameraReady={() => setReady(true)}
-        style={styles.camera}
-        type={CameraType.back}
-      ></Camera>
+      {!picture ? (
+        <Camera
+          ref={(ref) => setCameraRef(ref)}
+          onCameraReady={() => setReady(true)}
+          style={styles.camera}
+          type={CameraType.back}
+        ></Camera>
+      ) : (
+        // <View style={styles.camera}>
+          <ImageBackground style={styles.camera} source={{uri: picture}} />
+        /* </View> */
+      )}
       <View style={styles.buttonContainer}>
         <CircleButton onPress={() => pressFunction()} disabled={paused} />
       </View>
@@ -104,8 +113,5 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     justifyContent: "center",
-  },
-  button: {
-    // alignSelf: "center",
   },
 });
