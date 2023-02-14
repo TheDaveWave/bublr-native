@@ -16,18 +16,18 @@ const ref = createNavigationContainerRef();
 export default function AppNav() {
   const [routeName, setRouteName] = useState();
   // possibly change this.
-  const { loading } = useContext(LocationContext);
+  // const { loading } = useContext(LocationContext);
 
   // Have loading animation at least for saving headache during development.
   // the issue with this is that it restricts access to other parts of the app
   // that do not require access to location.
-  if(loading) {
+  /* if(loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
         <ActivityIndicator size="large" />
       </View>
     )
-  }
+  } */
 
   return (
     <NavigationContainer

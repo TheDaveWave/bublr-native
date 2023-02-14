@@ -1,41 +1,56 @@
-import { StyleSheet, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
-import { LocationContext } from "../context/LocationContext";
-import { useContext, useState, useRef } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
+import { useEffect, useState } from "react";
+import * as Location from "expo-location";
+import { API_KEY } from "@env";
 import MapOverlay from "../components/MapOverlay";
 
-const testData = [
-  {
-    id: 1,
-    latitude: 46.9249837,
-    longitude: -96.8145239,
-  },
-  {
-    id: 2,
-    latitude: 46.8699271,
-    longitude: -96.7905943,
-  },
-  {
-    id: 3,
-    latitude: 46.9243756,
-    longitude: -96.7804359,
-  },
-  {
-    id: 4,
-    latitude: 46.87257304836294,
-    longitude: -96.78109645843506,
-  },
-];
+import { testData } from "../test-data/fountain-data";
 
 export default function Map({ navigation }) {
-  const { userLocation } = useContext(LocationContext);
+  const [loading, setLoading] = useState(false);
   const [mapRef, setMapRef] = useState(null);
-  // let mapRef = useRef(null);
-
-  const [markerCoords, setMarkerCoords] = useState({
-    latitude: userLocation.coords.latitude,
-    longitude: userLocation.coords.longitude,
+  const [userLocation, setUserLocation] = useState({
+    coords: {
+      latitude: 0,
+      longitude: 0,
+    },
   });
+  const [markerCoords, setMarkerCoords] = useState(null);
+  const [foregroundPermissions, requestForegroundPermissions] =
+    Location.useForegroundPermissions();
+
+  if (!foregroundPermissions) {
+    try {
+      requestForegroundPermissions();
+    } catch (err) {
+      console.log("Error getting foreground permissions:", err);
+    }
+  }
+
+  async function getUserLocation() {
+    const response = await Location.getCurrentPositionAsync();
+    console.log("User location:", response);
+    setUserLocation(response);
+    // temporary for the draggable marker that I love to mess with.
+    setMarkerCoords({
+      latitude: response.coords.latitude,
+      longitude: response.coords.longitude,
+    });
+    // potentially change this?
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      const response = await Location.hasServicesEnabledAsync();
+      if (response) {
+        await getUserLocation();
+      }
+    })();
+  }, []);
 
   function getBoundaries() {
     if (mapRef === null) {
@@ -47,12 +62,19 @@ export default function Map({ navigation }) {
       .catch((err) => console.log(err));
   }
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <MapView
         showsUserLocation={true}
-        showsMyLocationButton={true}
-        showsCompass={true}
+        provider={PROVIDER_GOOGLE}
         ref={(ref) => setMapRef(ref)}
         onMapReady={() => {
           getBoundaries();
@@ -65,6 +87,13 @@ export default function Map({ navigation }) {
           longitudeDelta: 0.0121,
         }}
       >
+        {/* <MapViewDirections 
+          apikey={REACT_APP_API_KEY}
+          origin={userLocation.coords}
+          destination={testData[1]}
+          strokeWidth={5}
+          strokeColor="blue"
+        /> */}
         <Marker
           draggable
           coordinate={markerCoords}

@@ -49,13 +49,7 @@ export default function AddFountain({ navigation }) {
         .takePictureAsync()
         .then((response) => {
           console.log("picture taken:", response);
-          // save the uri of the image to the devices photo library.
-          // MediaLibrary.saveToLibraryAsync(response.uri);
           setPicture(response.uri);
-          /* does not work after picture state is set since cameraref becomes null
-          and the image is rendered and not the camera. The cameraref is set when camera renders. */
-          // pause preview while paused is true.
-          // cameraRef.pausePreview();
         })
         .catch((err) => {
           console.log("Error taking picture:", err);
