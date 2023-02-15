@@ -7,6 +7,7 @@ import { API_KEY } from "@env";
 import MapOverlay from "../components/MapOverlay";
 
 import { testData } from "../test-data/fountain-data";
+import FountainCallout from "../components/map/FountainCallout";
 
 export default function Map({ navigation }) {
   const [loading, setLoading] = useState(false);
@@ -34,11 +35,11 @@ export default function Map({ navigation }) {
     const laskKnown = await Location.getLastKnownPositionAsync();
     console.log("Last known position:", laskKnown);
     // if last known position is not available or null then get current position.
-    const response = laskKnown || await Location.getCurrentPositionAsync();
+    const response = laskKnown || (await Location.getCurrentPositionAsync());
     console.log("User location:", response);
     setUserLocation(response);
     // temporary for the draggable marker that I love to mess with.
-   /*  setMarkerCoords({
+    /*  setMarkerCoords({
       latitude: response.coords.latitude,
       longitude: response.coords.longitude,
     }); */
@@ -98,18 +99,15 @@ export default function Map({ navigation }) {
           strokeWidth={5}
           strokeColor="blue"
         /> */}
-       {/*  <Marker
+        {/*  <Marker
           draggable
           coordinate={markerCoords}
           onDragEnd={(e) => setMarkerCoords(e.nativeEvent.coordinate)}
         /> */}
         {testData.map((ftn, index) => (
-          <Marker
-            key={index}
-            coordinate={ftn.coordinate}
-            title="This is a fountain."
-            description="Drink it!"
-          />
+          <Marker key={index} coordinate={ftn.coordinate}>
+            <FountainCallout imagePath={ftn.imagePath} />
+          </Marker>
         ))}
       </MapView>
       {/* <MapOverlay /> */}
