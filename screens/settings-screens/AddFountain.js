@@ -66,6 +66,7 @@ export default function AddFountain({ navigation }) {
   }
 
   async function submit() {
+    // LOOK at changing when the position is grabbed.
     await Location.getCurrentPositionAsync()
       .then((response) => {
         console.log(response);
