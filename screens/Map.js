@@ -4,7 +4,7 @@ import MapViewDirections from "react-native-maps-directions";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { API_KEY } from "@env";
-import MapOverlay from "../components/MapOverlay";
+import MapOverlay from "../components/map/MapOverlay";
 
 import { testData } from "../test-data/fountain-data";
 import FountainCallout from "../components/map/FountainCallout";

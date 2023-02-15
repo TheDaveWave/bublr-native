@@ -5,6 +5,8 @@ export default function FountainCallout({ imagePath }) {
   return (
     <Callout>
       <View style={styles.container}>
+        {/* FIX when user is on map and puts app in background the images do not render
+            when user pulls app back to foreground. */}
         <Image style={styles.image} source={imagePath} />
       </View>
     </Callout>
