@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import {
   GestureHandlerRootView,
   PanGestureHandler,
@@ -7,12 +7,17 @@ import {
   useSharedValue,
   useAnimatedStyle,
   useAnimatedGestureHandler,
+  withSpring,
 } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { useEffect } from "react";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 export default function ListContainer() {
+  const { height } = useWindowDimensions();
+  const headerHeight = useHeaderHeight();
   const translateY = useSharedValue(0);
 
   const onDrag = useAnimatedGestureHandler({
@@ -21,6 +26,8 @@ export default function ListContainer() {
     },
     onActive: (event, context) => {
       translateY.value = event.translationY + context.translateY;
+      // translateY.value = Math.max(translateY.value, (headerHeight - height));
+      translateY.value = Math.max(translateY.value, headerHeight / 4);
     },
   });
 
@@ -28,18 +35,26 @@ export default function ListContainer() {
     return {
       transform: [
         {
-          translateY: translateY.value,
+          translateY: withSpring(translateY.value),
         },
       ],
     };
   });
 
+  useEffect(() => {
+    translateY.value = headerHeight / 4;
+  }, []);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <PanGestureHandler onGestureEvent={onDrag}>
-        <AnimatedView style={[containerStyle]}>
-          <View style={styles.slide} />
-        </AnimatedView>
+        <AnimatedView
+          style={[
+            styles.slide,
+            { height: height, bottom: headerHeight / 2 },
+            containerStyle,
+          ]}
+        ></AnimatedView>
       </PanGestureHandler>
     </GestureHandlerRootView>
   );
@@ -48,10 +63,13 @@ export default function ListContainer() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "green",
   },
   slide: {
-    width: 100,
-    height: 100,
+    // height: "150%",
+    width: "100%",
     backgroundColor: "blue",
+    alignSelf: "center",
+    borderRadius: 25,
   },
 });
