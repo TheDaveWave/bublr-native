@@ -11,6 +11,7 @@ import {
 } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useEffect } from "react";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
@@ -18,6 +19,7 @@ const AnimatedView = Animated.createAnimatedComponent(View);
 export default function ListContainer() {
   const { height } = useWindowDimensions();
   const headerHeight = useHeaderHeight();
+  const tabBarHeight = useBottomTabBarHeight();
   const translateY = useSharedValue(0);
 
   const onDrag = useAnimatedGestureHandler({
@@ -26,8 +28,26 @@ export default function ListContainer() {
     },
     onActive: (event, context) => {
       translateY.value = event.translationY + context.translateY;
-      // translateY.value = Math.max(translateY.value, (headerHeight - height));
+      // Adds a maximum value the sheet can not move past so it does not pan past the screen.
       translateY.value = Math.max(translateY.value, headerHeight / 4);
+    },
+    onEnd: (event, context) => {
+      const halfScreenHeight = height / 2;
+      // Create snap points for the bottom sheet to move to a specified part of the screen,
+      // if conditions are met.
+      if (
+        translateY.value > headerHeight * 1.2 &&
+        translateY.value < halfScreenHeight
+      ) {
+        translateY.value = height - tabBarHeight * 2.1;
+      } else if (
+        translateY.value < height - tabBarHeight * 2.5 &&
+        translateY.value > halfScreenHeight
+      ) {
+        translateY.value = headerHeight / 4;
+      } else {
+        translateY.value = height - tabBarHeight * 2.1;
+      }
     },
   });
 
@@ -37,7 +57,10 @@ export default function ListContainer() {
     return {
       transform: [
         {
-          translateY: withSpring(translateY.value),
+          translateY: withSpring(translateY.value, {
+            damping: 20,
+            mass: 0.5,
+          }),
         },
       ],
     };
