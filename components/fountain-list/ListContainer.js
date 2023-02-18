@@ -2,6 +2,7 @@ import { StyleSheet, View, useWindowDimensions } from "react-native";
 import {
   GestureHandlerRootView,
   PanGestureHandler,
+  FlatList
 } from "react-native-gesture-handler";
 import {
   useSharedValue,
@@ -13,6 +14,9 @@ import Animated from "react-native-reanimated";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useEffect } from "react";
+
+import { testData } from "../../test-data/fountain-data";
+import ListItem from "./ListItem";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
@@ -79,7 +83,15 @@ export default function ListContainer() {
             { height: height, bottom: headerHeight / 2 },
             containerStyle,
           ]}
-        ></AnimatedView>
+        >
+          <View style={styles.listContainer}>
+            <FlatList
+              data={testData}
+              renderItem={({ ftn }) => <ListItem fountain={ftn} />}
+              style={[styles.list, {height: height}]}
+            />
+          </View>
+        </AnimatedView>
       </PanGestureHandler>
     </GestureHandlerRootView>
   );
@@ -91,10 +103,22 @@ const styles = StyleSheet.create({
     backgroundColor: "green",
   },
   slide: {
-    // height: "150%",
     width: "100%",
     backgroundColor: "blue",
-    alignSelf: "center",
+    // alignSelf: "center",
     borderRadius: 25,
+    paddingHorizontal: 40,
+    paddingTop: 40,
+  },
+  listContainer: {
+    flex: 1,
+    backgroundColor: "orange",
+    alignItems: "center",
+    // justifyContent: "center",
+  },
+  list: {
+    // height: "80%",
+    width: "80%",
+    backgroundColor: "yellow",
   },
 });
