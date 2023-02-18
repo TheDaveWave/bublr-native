@@ -2,7 +2,7 @@ import { StyleSheet, View, useWindowDimensions } from "react-native";
 import {
   GestureHandlerRootView,
   PanGestureHandler,
-  FlatList
+  FlatList,
 } from "react-native-gesture-handler";
 import {
   useSharedValue,
@@ -25,6 +25,8 @@ export default function ListContainer() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const translateY = useSharedValue(0);
+
+  console.log(testData.length);
 
   const onDrag = useAnimatedGestureHandler({
     onStart: (event, context) => {
@@ -76,7 +78,11 @@ export default function ListContainer() {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <PanGestureHandler onGestureEvent={onDrag}>
+      <PanGestureHandler
+          waitFor={() => {}}
+          // failOffsetY={[-5, 5]} 
+          onGestureEvent={onDrag}
+          >
         <AnimatedView
           style={[
             styles.slide,
@@ -84,13 +90,14 @@ export default function ListContainer() {
             containerStyle,
           ]}
         >
-          <View style={styles.listContainer}>
+          <AnimatedView style={styles.listContainer}>
             <FlatList
+              enabled={true}
               data={testData}
               renderItem={({ ftn }) => <ListItem fountain={ftn} />}
-              style={[styles.list, {height: height}]}
+              style={[styles.list, { height: height }]}
             />
-          </View>
+          </AnimatedView>
         </AnimatedView>
       </PanGestureHandler>
     </GestureHandlerRootView>

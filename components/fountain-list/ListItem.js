@@ -12,9 +12,10 @@ export default function ListItem({ fountain }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     height: 50,
-    width: 50,
+    width: 250,
     backgroundColor: "#FF0000",
+    alignSelf: "center",
   },
 });
