@@ -93,7 +93,7 @@ export default function Map({ navigation }) {
         }}
       >
         {/* <MapViewDirections 
-          apikey={REACT_APP_API_KEY}
+          apikey={API_KEY}
           origin={userLocation.coords}
           destination={testData[1]}
           strokeWidth={5}

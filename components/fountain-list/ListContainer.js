@@ -31,6 +31,8 @@ export default function ListContainer() {
     },
   });
 
+  // swipe up and swipe down gesture to figure out where to send bottom sheet.
+
   const containerStyle = useAnimatedStyle(() => {
     return {
       transform: [
