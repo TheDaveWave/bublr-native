@@ -44,6 +44,7 @@ export default function BottomTabs({ routeName }) {
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="map" color={color} size={size} />
           ),
+          headerShown: true,
         }}
       />
       <Tab.Screen

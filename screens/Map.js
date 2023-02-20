@@ -8,6 +8,7 @@ import MapOverlay from "../components/map/MapOverlay";
 
 import { testData } from "../test-data/fountain-data";
 import FountainCallout from "../components/map/FountainCallout";
+import ListContainer from "../components/fountain-list/ListContainer";
 
 export default function Map({ navigation }) {
   const [loading, setLoading] = useState(false);
@@ -111,6 +112,7 @@ export default function Map({ navigation }) {
         ))}
       </MapView>
       {/* <MapOverlay /> */}
+      {/* <ListContainer /> */}
     </View>
   );
 }
