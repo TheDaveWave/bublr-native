@@ -105,6 +105,8 @@ export default function ListContainer() {
     console.log(offsetY);
   }
 
+  // add touch listener event for debugging
+
   return (
     <View style={styles.container}>
       <GestureHandlerRootView>
@@ -140,6 +142,7 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     width: "100%",
+    // zIndex: 2,
     // flex: 1,
     // backgroundColor: "green",
   },
