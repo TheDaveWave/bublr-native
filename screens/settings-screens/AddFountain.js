@@ -3,18 +3,23 @@ import { StyleSheet, View, ImageBackground } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
+// import { ref, onValue, push, update, remove } from "firebase/database";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
+// Component Imports:
 import CircleButton from "../../components/buttons/camera-buttons/CircleButton";
 import CameraButton from "../../components/buttons/camera-buttons/CameraButton";
 
 export default function AddFountain({ navigation }) {
+  // Camera state:
   const [cameraRef, setCameraRef] = useState(null);
   const [ready, setReady] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [picture, setPicture] = useState(null);
+  // Permissions:
   const [camPermission, requestCamPermission] = Camera.useCameraPermissions();
   const [permission, requestPermission] = MediaLibrary.usePermissions();
   const [locationPermission, requestLocationPermission] =
     Location.useForegroundPermissions();
-  const [paused, setPaused] = useState(false);
-  const [picture, setPicture] = useState(null);
 
   // update these if statements.
   if (!permission) {
@@ -42,7 +47,7 @@ export default function AddFountain({ navigation }) {
     }
   }
 
-  async function pressFunction() {
+  async function snapPicture() {
     if (ready) {
       setPaused(true);
       await cameraRef
@@ -67,18 +72,29 @@ export default function AddFountain({ navigation }) {
 
   async function submit() {
     // LOOK at changing when the position is grabbed.
-    await Location.getCurrentPositionAsync()
-      .then((response) => {
+    const location = await Location.getCurrentPositionAsync();
+    /* .then((response) => {
         console.log(response);
       })
       .catch((err) => {
         console.log("Error getting location", err);
-      });
-    await MediaLibrary.saveToLibraryAsync(picture);
-    alert("Picture saved.");
+      }); */
+    console.log("Location:", location);
+    console.log("URI:", picture);
+    // change file size?
+
+    // create blob
+    const blob = new Blob([picture]);
+    console.log("blob:", blob, `blob size: ${blob.size} bytes`);
+    // upload photo to firebase.
+
+    // get url and add to database on firebase.
+
+    /* await MediaLibrary.saveToLibraryAsync(picture);
+    alert("Picture saved."); */
     setPicture(null);
     setPaused(false);
-    // add a post request here.
+
     // navigation.goBack();
   }
 
@@ -96,7 +112,7 @@ export default function AddFountain({ navigation }) {
       )}
       <View style={styles.buttonContainer}>
         <CameraButton icon="done" onPress={() => submit()} disabled={!paused} />
-        <CircleButton onPress={() => pressFunction()} disabled={paused} />
+        <CircleButton onPress={() => snapPicture()} disabled={paused} />
         <CameraButton
           icon="refresh"
           onPress={() => reset()}
