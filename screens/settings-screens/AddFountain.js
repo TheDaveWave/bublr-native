@@ -4,6 +4,7 @@ import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getDatabase, ref as dbRef, set } from "firebase/database";
 
 // Component Imports:
 import CircleButton from "../../components/buttons/camera-buttons/CircleButton";
@@ -76,22 +77,8 @@ export default function AddFountain({ navigation }) {
     console.log("Location:", location);
 
     // upload photo to firebase.
-    await uploadImage();
-    // get url and add to database on firebase.
-
-    // Download blob to device
-
-    /* await MediaLibrary.saveToLibraryAsync(picture);
-    alert("Picture saved."); */
-    setPicture(null);
-    setPaused(false);
-
-    // navigation.goBack();
-  }
-
-  async function uploadImage() {
     const storage = getStorage();
-    const storageRef = ref(storage, "images-test7");
+    const storageRef = ref(storage, "images-test8");
 
     const img = await fetch(picture.uri);
     const file = await img.blob();
@@ -99,6 +86,21 @@ export default function AddFountain({ navigation }) {
     const snapshot = await uploadBytes(storageRef, file);
     const url = await getDownloadURL(snapshot.ref);
     console.log("url:", url);
+    // get url and add to database on firebase.
+    const database = getDatabase();
+    const databaseRef = dbRef(database, "fountans/");
+    const dbSnapshot = await set(databaseRef, {
+      id: 1,
+      coords: location.coords,
+      imagePath: url,
+    });
+    console.log("db snapshot:", dbSnapshot);
+    // Download blob to device
+
+    setPicture(null);
+    setPaused(false);
+
+    // navigation.goBack();
   }
 
   return (
