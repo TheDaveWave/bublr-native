@@ -3,6 +3,7 @@ import { StyleSheet, View, ImageBackground } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
+import * as ImagePicker from "expo-image-picker";
 // import { ref, onValue, push, update, remove } from "firebase/database";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 // Component Imports:
@@ -20,6 +21,8 @@ export default function AddFountain({ navigation }) {
   const [permission, requestPermission] = MediaLibrary.usePermissions();
   const [locationPermission, requestLocationPermission] =
     Location.useForegroundPermissions();
+
+  const storage = getStorage();
 
   // update these if statements.
   if (!permission) {
@@ -59,6 +62,10 @@ export default function AddFountain({ navigation }) {
         .catch((err) => {
           console.log("Error taking picture:", err);
         });
+     /*  let result = await ImagePicker.launchCameraAsync({ base64: true });
+      result = result.assets[0];
+      console.log(result);
+      setPicture(result.uri); */
     } else {
       alert("Lol you can't take the picture!");
     }
@@ -87,7 +94,7 @@ export default function AddFountain({ navigation }) {
     const blob = new Blob([picture]);
     console.log("blob:", blob, `blob size: ${blob.size} bytes`);
     // upload photo to firebase.
-
+      // const fountainRef = ref(storage)
     // get url and add to database on firebase.
 
     /* await MediaLibrary.saveToLibraryAsync(picture);
