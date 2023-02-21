@@ -3,8 +3,7 @@ import { StyleSheet, View, ImageBackground } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
-import * as ImagePicker from "expo-image-picker";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 // Component Imports:
 import CircleButton from "../../components/buttons/camera-buttons/CircleButton";
@@ -52,18 +51,14 @@ export default function AddFountain({ navigation }) {
     if (ready) {
       setPaused(true);
       await cameraRef
-        .takePictureAsync({ base64: true, quality: 1 })
+        .takePictureAsync({ base64: true, quality: 0.2 })
         .then((response) => {
-          console.log("picture taken:", response);
+          console.log("picture taken:", response.uri);
           setPicture(response);
         })
         .catch((err) => {
           console.log("Error taking picture:", err);
         });
-      /* let result = await ImagePicker.launchCameraAsync({ base64: true });
-      result = result.assets[0];
-      console.log(result); */
-      // setPicture(result.uri);
     } else {
       alert("Lol you can't take the picture!");
     }
@@ -78,17 +73,8 @@ export default function AddFountain({ navigation }) {
   async function submit() {
     // LOOK at changing when the position is grabbed.
     const location = await Location.getCurrentPositionAsync();
-    /* .then((response) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log("Error getting location", err);
-      }); */
     console.log("Location:", location);
 
-    // create blob
-    /* const blob = new Blob([picture.uri]);
-    console.log("blob:", blob, `blob size: ${blob.size} bytes`); */
     // upload photo to firebase.
     await uploadImage();
     // get url and add to database on firebase.
@@ -105,22 +91,14 @@ export default function AddFountain({ navigation }) {
 
   async function uploadImage() {
     const storage = getStorage();
-    const storageRef = ref(storage, "images-test2");
+    const storageRef = ref(storage, "images-test7");
 
     const img = await fetch(picture.uri);
     const file = await img.blob();
 
-    uploadBytes(storageRef, file).then((result) => {
-      console.log(result);
-    });
-
-    // await uploadBytes(storageRef, file)
-    //   .then((response) => {
-    //     console.log(response);
-    //   })
-    //   .catch((err) => {
-    //     console.log("error uploading to firebase", err);
-    //   });
+    const snapshot = await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(snapshot.ref);
+    console.log("url:", url);
   }
 
   return (
