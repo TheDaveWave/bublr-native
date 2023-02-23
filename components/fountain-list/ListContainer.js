@@ -14,6 +14,7 @@ import Animated from "react-native-reanimated";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useEffect } from "react";
+import { getDatabase, ref, onValue } from "firebase/database";
 
 import { testData } from "../../test-data/fountain-data";
 import ListItem from "./ListItem";
@@ -26,7 +27,7 @@ export default function ListContainer() {
   const tabBarHeight = useBottomTabBarHeight();
   const translateY = useSharedValue(0);
 
-  console.log(testData.length);
+  // console.log(testData.length);
 
   const onDrag = useAnimatedGestureHandler({
     onStart: (event, context) => {
@@ -78,11 +79,7 @@ export default function ListContainer() {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <PanGestureHandler
-          waitFor={() => {}}
-          // failOffsetY={[-5, 5]} 
-          onGestureEvent={onDrag}
-          >
+      <PanGestureHandler onGestureEvent={onDrag}>
         <AnimatedView
           style={[
             styles.slide,

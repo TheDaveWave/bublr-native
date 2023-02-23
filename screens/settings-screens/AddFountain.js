@@ -4,11 +4,12 @@ import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { getDatabase, ref as dbRef, set } from "firebase/database";
+import { getDatabase, ref as dbRef, set, push } from "firebase/database";
 
 // Component Imports:
 import CircleButton from "../../components/buttons/camera-buttons/CircleButton";
 import CameraButton from "../../components/buttons/camera-buttons/CameraButton";
+import { uuidv4 } from "@firebase/util";
 
 export default function AddFountain({ navigation }) {
   // Camera state:
@@ -78,7 +79,8 @@ export default function AddFountain({ navigation }) {
 
     // upload photo to firebase.
     const storage = getStorage();
-    const storageRef = ref(storage, "images-test8");
+    // create random uuid for the image name with the uuidv4 function.
+    const storageRef = ref(storage, uuidv4());
 
     const img = await fetch(picture.uri);
     const file = await img.blob();
@@ -88,19 +90,23 @@ export default function AddFountain({ navigation }) {
     console.log("url:", url);
     // get url and add to database on firebase.
     const database = getDatabase();
-    const databaseRef = dbRef(database, "fountans/");
-    const dbSnapshot = await set(databaseRef, {
-      id: 1,
-      coords: location.coords,
-      imagePath: url,
+    const databaseRef = dbRef(database, "fountains");
+    // using push to auto generate an id.
+    const newDatabaseRef = push(databaseRef);
+    // look at Work with Lists of Data on Firebase Docs.
+    await set(newDatabaseRef, {
+      coords: {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      },
+      imageUrl: url,
     });
-    console.log("db snapshot:", dbSnapshot);
     // Download blob to device
 
     setPicture(null);
     setPaused(false);
-
-    // navigation.goBack();
+    alert("image uploaded");
+    navigation.goBack();
   }
 
   return (
