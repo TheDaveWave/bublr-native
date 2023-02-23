@@ -75,19 +75,18 @@ export default function AddFountain({ navigation }) {
   async function submit() {
     // LOOK at changing when the position is grabbed.
     const location = await Location.getCurrentPositionAsync();
-    console.log("Location:", location);
+    // console.log("Location:", location);
 
     // upload photo to firebase.
     const storage = getStorage();
     // create random uuid for the image name with the uuidv4 function.
-    const storageRef = ref(storage, uuidv4());
-
+    const name = uuidv4();
+    const storageRef = ref(storage, name);
     const img = await fetch(picture.uri);
     const file = await img.blob();
-
+  
     const snapshot = await uploadBytes(storageRef, file);
     const url = await getDownloadURL(snapshot.ref);
-    console.log("url:", url);
     // get url and add to database on firebase.
     const database = getDatabase();
     const databaseRef = dbRef(database, "fountains");
