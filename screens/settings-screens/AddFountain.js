@@ -3,11 +3,13 @@ import { StyleSheet, View, ImageBackground } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
-// import { ref, onValue, push, update, remove } from "firebase/database";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getDatabase, ref as dbRef, set, push } from "firebase/database";
+
 // Component Imports:
 import CircleButton from "../../components/buttons/camera-buttons/CircleButton";
 import CameraButton from "../../components/buttons/camera-buttons/CameraButton";
+import { uuidv4 } from "@firebase/util";
 
 export default function AddFountain({ navigation }) {
   // Camera state:
@@ -51,10 +53,10 @@ export default function AddFountain({ navigation }) {
     if (ready) {
       setPaused(true);
       await cameraRef
-        .takePictureAsync()
+        .takePictureAsync({ base64: true, quality: 0.2 })
         .then((response) => {
-          console.log("picture taken:", response);
-          setPicture(response.uri);
+          console.log("picture taken:", response.uri);
+          setPicture(response);
         })
         .catch((err) => {
           console.log("Error taking picture:", err);
@@ -73,29 +75,37 @@ export default function AddFountain({ navigation }) {
   async function submit() {
     // LOOK at changing when the position is grabbed.
     const location = await Location.getCurrentPositionAsync();
-    /* .then((response) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log("Error getting location", err);
-      }); */
-    console.log("Location:", location);
-    console.log("URI:", picture);
-    // change file size?
+    // console.log("Location:", location);
 
-    // create blob
-    const blob = new Blob([picture]);
-    console.log("blob:", blob, `blob size: ${blob.size} bytes`);
     // upload photo to firebase.
-
+    const storage = getStorage();
+    // create random uuid for the image name with the uuidv4 function.
+    const name = uuidv4();
+    const storageRef = ref(storage, name);
+    const img = await fetch(picture.uri);
+    const file = await img.blob();
+  
+    const snapshot = await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(snapshot.ref);
     // get url and add to database on firebase.
+    const database = getDatabase();
+    const databaseRef = dbRef(database, "fountains");
+    // using push to auto generate an id.
+    const newDatabaseRef = push(databaseRef);
+    // look at Work with Lists of Data on Firebase Docs.
+    await set(newDatabaseRef, {
+      coords: {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      },
+      imageUrl: url,
+    });
+    // Download blob to device
 
-    /* await MediaLibrary.saveToLibraryAsync(picture);
-    alert("Picture saved."); */
     setPicture(null);
     setPaused(false);
-
-    // navigation.goBack();
+    alert("fountain uploaded");
+    navigation.goBack();
   }
 
   return (
@@ -108,7 +118,7 @@ export default function AddFountain({ navigation }) {
           type={CameraType.back}
         ></Camera>
       ) : (
-        <ImageBackground style={styles.camera} source={{ uri: picture }} />
+        <ImageBackground style={styles.camera} source={{ uri: picture.uri }} />
       )}
       <View style={styles.buttonContainer}>
         <CameraButton icon="done" onPress={() => submit()} disabled={!paused} />

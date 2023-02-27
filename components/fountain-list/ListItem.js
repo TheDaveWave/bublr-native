@@ -1,22 +1,30 @@
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function ListItem({ fountain }) {
+  // HANDLE Errors with retrieving ftn data
   return (
     <View style={styles.container}>
-      <View></View>
+      <View>
+        <Image style={styles.image} source={{ uri: fountain.imageUrl }} />
+      </View>
       {/* List fountain properties here */}
-      <View></View>
+      <View>
+        {/* <Text>{JSON.stringify(fountain)}</Text> */}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     height: 250,
     width: 250,
-    backgroundColor: "#FF0000",
+    backgroundColor: "#D3D3D3",
     alignSelf: "center",
     margin: 20,
+  },
+  image: {
+    height: 250,
+    width: 250,
   },
 });

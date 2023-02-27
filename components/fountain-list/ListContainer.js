@@ -1,131 +1,86 @@
-import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { StyleSheet, View, FlatList } from "react-native";
 import {
-  GestureHandlerRootView,
-  PanGestureHandler,
-  FlatList,
-} from "react-native-gesture-handler";
-import {
-  useSharedValue,
-  useAnimatedStyle,
-  useAnimatedGestureHandler,
-  withSpring,
-} from "react-native-reanimated";
-import Animated from "react-native-reanimated";
-import { useHeaderHeight } from "@react-navigation/elements";
+  getDatabase,
+  ref,
+  get,
+  onChildAdded,
+  onChildRemoved,
+} from "firebase/database";
+import { useEffect, useState } from "react";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useEffect } from "react";
 
-import { testData } from "../../test-data/fountain-data";
+// Component Imports:
 import ListItem from "./ListItem";
 
-const AnimatedView = Animated.createAnimatedComponent(View);
-
 export default function ListContainer() {
-  const { height } = useWindowDimensions();
-  const headerHeight = useHeaderHeight();
+  // get the instance of the root database from Firebase.
+  const database = getDatabase();
+  // create a reference to the fountains location on the database.
+  const fountainsRef = ref(database, "/fountains");
+  const [fountains, setFountains] = useState([]);
   const tabBarHeight = useBottomTabBarHeight();
-  const translateY = useSharedValue(0);
 
-  console.log(testData.length);
+  // HANDLE Errors with retrieving ftn data
 
-  const onDrag = useAnimatedGestureHandler({
-    onStart: (event, context) => {
-      context.translateY = translateY.value;
-    },
-    onActive: (event, context) => {
-      translateY.value = event.translationY + context.translateY;
-      // Adds a maximum value the sheet can not move past so it does not pan past the screen.
-      translateY.value = Math.max(translateY.value, headerHeight / 4);
-    },
-    onEnd: (event, context) => {
-      const halfScreenHeight = height / 2;
-      // Create snap points for the bottom sheet to move to a specified part of the screen,
-      // if conditions are met.
-      if (
-        translateY.value > headerHeight * 1.2 &&
-        translateY.value < halfScreenHeight
-      ) {
-        translateY.value = height - tabBarHeight * 2.1;
-      } else if (
-        translateY.value < height - tabBarHeight * 2.5 &&
-        translateY.value > halfScreenHeight
-      ) {
-        translateY.value = headerHeight / 4;
-      } else {
-        translateY.value = height - tabBarHeight * 2.1;
+  // Grab the database values from Firebase.
+  async function fetchDatabase() {
+    const list = [];
+    (await get(fountainsRef)).forEach((child) => {
+      const childKey = child.key;
+      // console.log(childKey);
+      const childData = child.val();
+      list.push(childData);
+    });
+    setFountains(list);
+  }
+
+  function addChildListeners() {
+    onChildAdded(fountainsRef, (snapshot) => {
+      const list = fountains;
+      list.push(snapshot.val());
+      if (list.length !== fountains.length) setFountains(list);
+    });
+    onChildRemoved(fountainsRef, (snapshot) => {
+      const list = fountains;
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].imageUrl === snapshot.imageUrl) {
+          list.splice(i, 1);
+        }
       }
-    },
-  });
-
-  // swipe up and swipe down gesture to figure out where to send bottom sheet.
-
-  const containerStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateY: withSpring(translateY.value, {
-            damping: 20,
-            mass: 0.5,
-          }),
-        },
-      ],
-    };
-  });
+      if (list.length !== fountains.length) setFountains(list);
+    });
+  }
 
   useEffect(() => {
-    translateY.value = headerHeight / 4;
+    (async () => {
+      await fetchDatabase();
+      addChildListeners();
+    })();
   }, []);
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <PanGestureHandler
-          waitFor={() => {}}
-          // failOffsetY={[-5, 5]} 
-          onGestureEvent={onDrag}
-          >
-        <AnimatedView
-          style={[
-            styles.slide,
-            { height: height, bottom: headerHeight / 2 },
-            containerStyle,
-          ]}
-        >
-          <AnimatedView style={styles.listContainer}>
-            <FlatList
-              enabled={true}
-              data={testData}
-              renderItem={({ ftn }) => <ListItem fountain={ftn} />}
-              style={[styles.list, { height: height }]}
-            />
-          </AnimatedView>
-        </AnimatedView>
-      </PanGestureHandler>
-    </GestureHandlerRootView>
+    <View style={styles.container}>
+      <FlatList
+        enabled={true}
+        data={fountains}
+        // keyExtractor={(item) => item.key}
+        renderItem={({ item }) => <ListItem fountain={item} />}
+        style={[
+          styles.list,
+          {
+            marginBottom: tabBarHeight + 10,
+          },
+        ]}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "green",
-  },
-  slide: {
-    width: "100%",
-    backgroundColor: "blue",
-    // alignSelf: "center",
-    borderRadius: 25,
-    paddingHorizontal: 40,
-    paddingTop: 40,
-  },
-  listContainer: {
-    flex: 1,
-    backgroundColor: "orange",
-    alignItems: "center",
-    // justifyContent: "center",
   },
   list: {
-    // height: "80%",
-    width: "80%",
-    backgroundColor: "yellow",
+    alignSelf: "center",
   },
 });
