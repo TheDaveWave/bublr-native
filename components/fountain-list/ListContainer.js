@@ -54,7 +54,7 @@ export default function ListContainer() {
   useEffect(() => {
     (async () => {
       await fetchDatabase();
-      addChildListeners();
+      // addChildListeners();
     })();
   }, []);
 
@@ -65,12 +65,10 @@ export default function ListContainer() {
         data={fountains}
         // keyExtractor={(item) => item.key}
         renderItem={({ item }) => <ListItem fountain={item} />}
-        style={[
-          styles.list,
-          {
-            marginBottom: tabBarHeight + 10,
-          },
-        ]}
+        style={{
+          marginBottom: tabBarHeight + 10,
+        }}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -79,8 +77,5 @@ export default function ListContainer() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  list: {
-    alignSelf: "center",
   },
 });

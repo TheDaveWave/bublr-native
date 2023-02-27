@@ -17,14 +17,17 @@ export default function ListItem({ fountain }) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 250,
-    width: 250,
+    height: 450,
+    width: 375,
+    margin: 20,
     backgroundColor: "#D3D3D3",
     alignSelf: "center",
-    margin: 20,
+    alignItems: "center",
+    borderRadius: 15,
   },
   image: {
-    height: 250,
-    width: 250,
+    height: 375,
+    width: 375,
+    borderRadius: 15,
   },
 });
