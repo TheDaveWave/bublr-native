@@ -99,11 +99,6 @@ export default function Map({ navigation }) {
           strokeWidth={5}
           strokeColor="blue"
         /> */}
-        {/*  <Marker
-          draggable
-          coordinate={markerCoords}
-          onDragEnd={(e) => setMarkerCoords(e.nativeEvent.coordinate)}
-        /> */}
         {testData.map((ftn, index) => (
           <Marker key={index} coordinate={ftn.coordinate}>
             <FountainCallout imagePath={ftn.imagePath} />

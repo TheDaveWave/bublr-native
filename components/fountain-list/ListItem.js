@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function ListItem({ fountain }) {
-
+  // HANDLE Errors with retrieving ftn data
   return (
     <View style={styles.container}>
       <View>
@@ -10,7 +10,6 @@ export default function ListItem({ fountain }) {
       {/* List fountain properties here */}
       <View>
         {/* <Text>{JSON.stringify(fountain)}</Text> */}
-        {/* <Text>Image Url: {fountain.imageUrl}</Text> */}
       </View>
     </View>
   );
@@ -18,10 +17,9 @@ export default function ListItem({ fountain }) {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     height: 250,
     width: 250,
-    backgroundColor: "#FF0000",
+    backgroundColor: "#D3D3D3",
     alignSelf: "center",
     margin: 20,
   },

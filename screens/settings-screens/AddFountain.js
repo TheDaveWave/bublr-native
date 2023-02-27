@@ -104,7 +104,7 @@ export default function AddFountain({ navigation }) {
 
     setPicture(null);
     setPaused(false);
-    alert("image uploaded");
+    alert("fountain uploaded");
     navigation.goBack();
   }
 
