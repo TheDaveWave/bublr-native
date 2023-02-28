@@ -8,7 +8,6 @@ import { useContext, useState } from "react";
 // Navigation component imports:
 import BottomTabs from "./BottomTabs";
 
-import { LocationContext } from "../context/LocationContext";
 import { ActivityIndicator, View } from "react-native";
 
 const ref = createNavigationContainerRef();
