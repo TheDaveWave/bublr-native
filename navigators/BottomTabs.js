@@ -85,22 +85,7 @@ export default function BottomTabs({ routeName }) {
 
 const styles = StyleSheet.create({
   tabBar: {
-    position: "absolute",
-    height: 90,
-    elevation: 0,
-    bottom: 25,
-    left: 20,
-    right: 20,
-    backgroundColor: "#F5FBEF",
-    borderRadius: 15,
-    paddingBottom: 25,
-    paddingTop: 10,
-    shadowOffset: {
-      height: 12,
-      width: 0,
-    },
-    shadowOpacity: 0.5,
-    shadowColor: "#E3E7DE",
+    marginBottom: 15,
   },
   hidden: {
     display: "none",

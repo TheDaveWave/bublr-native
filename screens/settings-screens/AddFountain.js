@@ -136,7 +136,7 @@ export default function AddFountain({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#D5D5D5",
+    backgroundColor: "#FFF",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     flex: 1 / 3,
     alignSelf: "center",
     paddingTop: 30,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF",
     width: "100%",
     justifyContent: "center",
     flexDirection: "row",

@@ -7,7 +7,6 @@ import {
   onChildRemoved,
 } from "firebase/database";
 import { useEffect, useState } from "react";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 // Component Imports:
 import ListItem from "./ListItem";
@@ -18,7 +17,6 @@ export default function ListContainer() {
   // create a reference to the fountains location on the database.
   const fountainsRef = ref(database, "/fountains");
   const [fountains, setFountains] = useState([]);
-  const tabBarHeight = useBottomTabBarHeight();
 
   // HANDLE Errors with retrieving ftn data
 
@@ -65,9 +63,6 @@ export default function ListContainer() {
         data={fountains}
         // keyExtractor={(item) => item.key}
         renderItem={({ item }) => <ListItem fountain={item} />}
-        style={{
-          marginBottom: tabBarHeight + 10,
-        }}
         showsVerticalScrollIndicator={false}
       />
     </View>
