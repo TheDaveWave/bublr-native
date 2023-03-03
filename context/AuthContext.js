@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import {
+  createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -10,8 +11,8 @@ import {
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState({});
-  // const [user, setUser] = useState(null);
+  // const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const [uuid, setUuid] = useState(null);
   const auth = getAuth();
 
@@ -23,7 +24,18 @@ export function AuthProvider({ children }) {
         setUser(userCredential.user);
       })
       .catch((err) => {
-        console.log("Error loggin in with email", err);
+        console.log("Error loggin in with email:", err);
+      });
+  }
+
+  async function emailSignUp(email, password) {
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log("userCredentials signup:", userCredential);
+        setUser(userCredential.user);
+      })
+      .catch((err) => {
+        console.log("Error signing up new user:", err);
       });
   }
 
@@ -39,7 +51,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ emailSignIn, user }}>
+    <AuthContext.Provider value={{ emailSignIn, emailSignUp, user }}>
       {children}
     </AuthContext.Provider>
   );
