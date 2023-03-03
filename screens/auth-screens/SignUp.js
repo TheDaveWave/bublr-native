@@ -3,14 +3,14 @@ import { Text, View, TextInput, Button } from "react-native";
 import { AuthContext } from "../../context/AuthContext";
 import styles from "../../styles/styles";
 
-export default function LoginScreen({ navigation }) {
-  const { emailSignIn, emailSignUp } = useContext(AuthContext);
+export default function SignUpScreen({ navigation }) {
+  const { emailSignUp } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   function submit() {
-    emailSignIn(email, password);
+    emailSignUp(email, password);
     setEmail("");
     setPassword("");
   }
@@ -33,7 +33,7 @@ export default function LoginScreen({ navigation }) {
           style={styles.input}
         />
         <Button title="Submit" onPress={() => submit()} />
-        <Button title="Sign Up" onPress={() => navigation.navigate("Signup")} />
+        <Button title="Login" onPress={() => navigation.navigate("Login")} />
       </View>
     </View>
   );
