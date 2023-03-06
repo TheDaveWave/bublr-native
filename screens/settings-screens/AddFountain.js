@@ -100,7 +100,7 @@ export default function AddFountain({ navigation }) {
       },
       imageUrl: url,
     });
-    // Download blob to device
+    // Download blob to device?
 
     setPicture(null);
     setPaused(false);
