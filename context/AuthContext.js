@@ -6,7 +6,6 @@ import {
   signOut,
 } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { async, jsonEval } from "@firebase/util";
 // firebase auth accesses react-native core's async storage and throws a warning message.
 // https://amanhimself.dev/blog/remove-asyncstorage-has-been-extracted-warning-using-firebase/
 
