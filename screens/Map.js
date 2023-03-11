@@ -20,6 +20,7 @@ import MapOverlay from "../components/map/MapOverlay/MapOverlay";
 export default function Map({ navigation }) {
   // Local state:
   const [loading, setLoading] = useState(false);
+  const [color, setColor] = useState("#0000FF");
   const [mapRef, setMapRef] = useState(null);
   const [userLocation, setUserLocation] = useState({
     coords: {
@@ -82,7 +83,6 @@ export default function Map({ navigation }) {
     const response = laskKnown || (await Location.getCurrentPositionAsync());
     // console.log("User location:", response);
     setUserLocation(response);
-
     // potentially change this?
     setLoading(false);
   }
@@ -98,28 +98,21 @@ export default function Map({ navigation }) {
     })();
   }, []);
 
-  function getBoundaries() {
-    if (mapRef === null) {
-      return;
-    }
-    mapRef
-      .getMapBoundaries()
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-  }
-
   // uses the map reference to call the setCamera function which
   // centers the camera onto the users location.
   function centerMap() {
     if (mapRef === null) {
       return;
     }
-    mapRef.setCamera({
-      center: {
-        latitude: userLocation.coords.latitude,
-        longitude: userLocation.coords.longitude,
+    mapRef.animateCamera(
+      {
+        center: {
+          latitude: userLocation.coords.latitude,
+          longitude: userLocation.coords.longitude,
+        },
       },
-    });
+      2000
+    );
   }
 
   if (loading) {
@@ -136,15 +129,27 @@ export default function Map({ navigation }) {
         showsUserLocation={true}
         provider={PROVIDER_GOOGLE}
         ref={(ref) => setMapRef(ref)}
-        /* onMapReady={() => {
-          getBoundaries();
-        }} */
         style={styles.map}
         initialRegion={{
           latitude: userLocation.coords.latitude,
           longitude: userLocation.coords.longitude,
           latitudeDelta: 0.0122,
           longitudeDelta: 0.0121,
+        }}
+        onRegionChange={() => setColor("#808080")}
+        onRegionChangeComplete={(e) => {
+          // fine tune the margin and make a better check.
+          const margin = 0.0008;
+          const location = userLocation.coords;
+          const checkLat =
+            e.latitude < location.latitude + margin &&
+            e.latitude > location.latitude - margin;
+          const checkLng =
+            e.longitude < location.longitude + margin &&
+            e.longitude > location.longitude - margin;
+          if (checkLat && checkLng) {
+            setColor("#0000FF");
+          }
         }}
       >
         {fountains.map((ftn, index) => (
@@ -153,7 +158,7 @@ export default function Map({ navigation }) {
           </Marker>
         ))}
       </MapView>
-      <MapOverlay centerMap={centerMap} />
+      <MapOverlay centerMap={centerMap} color={color} />
     </View>
   );
 }
