@@ -15,7 +15,7 @@ import {
 // Component imports:
 import { API_KEY } from "@env";
 import FountainCallout from "../components/map/FountainCallout";
-import MapOverlay from "../components/map/MapOverlay";
+import MapOverlay from "../components/map/MapOverlay/MapOverlay";
 
 export default function Map({ navigation }) {
   // Local state:
@@ -60,7 +60,7 @@ export default function Map({ navigation }) {
       list.push(childData);
     });
     console.log(list);
-    if(list.length > 0) {
+    if (list.length > 0) {
       setFountains(list);
     }
   }
@@ -108,6 +108,20 @@ export default function Map({ navigation }) {
       .catch((err) => console.log(err));
   }
 
+  // uses the map reference to call the setCamera function which
+  // centers the camera onto the users location.
+  function centerMap() {
+    if (mapRef === null) {
+      return;
+    }
+    mapRef.setCamera({
+      center: {
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
+      },
+    });
+  }
+
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -122,9 +136,9 @@ export default function Map({ navigation }) {
         showsUserLocation={true}
         provider={PROVIDER_GOOGLE}
         ref={(ref) => setMapRef(ref)}
-        onMapReady={() => {
+        /* onMapReady={() => {
           getBoundaries();
-        }}
+        }} */
         style={styles.map}
         initialRegion={{
           latitude: userLocation.coords.latitude,
@@ -139,7 +153,7 @@ export default function Map({ navigation }) {
           </Marker>
         ))}
       </MapView>
-      {/* <MapOverlay /> */}
+      <MapOverlay centerMap={centerMap} />
     </View>
   );
 }
